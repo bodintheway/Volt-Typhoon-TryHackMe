@@ -289,7 +289,8 @@ The attacker used wmic instead of PowerShell to run netsh because WMIC is less m
 
 To conceal their activities, what are the four types of event logs the attacker clears on the compromised system?
 
-![image](https://github.com/user-attachments/assets/411ad3d5-a5db-4a3e-85c4-8e0e592c8350
+
+https://github.com/user-attachments/assets/411ad3d5-a5db-4a3e-85c4-8e0e592c8350
 
 Note
 If we go back to the previous questions, we can see the attacker uses the wevtutil command to enumerate and interact with event logs. In this case, they used:
