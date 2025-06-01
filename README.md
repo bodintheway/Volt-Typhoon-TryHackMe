@@ -117,6 +117,40 @@ Our target APT frequently employs web shells as a persistence mechanism to maint
 ### Question 5
 ### To establish persistence on the compromised server, the attacker created a web shell using base64 encoded text. In which directory was the web shell placed?
 
+![image](https://github.com/user-attachments/assets/dc13db47-77fa-4ba3-84c7-0797efcdf858)
+### 🔍 Detection: Web Shell Deployment via Base64 on Compromised Host
+
+To investigate potential persistence techniques, we used the following **Splunk query**:
+
+```spl
+index=* sourcetype=wmic username="dean-admin"  
+| search command="*decode*" OR command="*echo*" OR command="*copy*" OR command="*move*"  
+| table _time, ip_address, command  
+| sort -_time
+```
+
+The query looks for WMIC commands run by the user dean-admin that contain terms commonly used in web shell creation. Commands like decode, echo, copy, and move are typically used to write and deploy base64-decoded payloads to disk.
+
+The answer is C:\Windows\Temp\
+
+
+## Defense Evasion
+Volt Typhoon utilizes advanced defense evasion techniques to significantly reduce the risk of detection. These methods encompass regular file purging, eliminating logs, and conducting thorough reconnaissance of their operational environment.
+
+### In an attempt to begin covering their tracks, the attackers remove evidence of the compromise. They first start by wiping RDP records. What PowerShell cmdlet does the attacker use to remove the “Most Recently Used” record?
+
+
+![image](https://github.com/user-attachments/assets/fd3295d1-e4bd-4e94-b1c1-b331772ee967)
+### How I Found the PowerShell Cmdlet Used to Remove RDP MRU Records
+
+I used the following Splunk query to search for PowerShell commands related to removal actions:
+
+```spl
+index=* sourcetype="powershell" *remove*  
+| table _time, CommandLine
+| sort -_time
+```
+
 
 
 
