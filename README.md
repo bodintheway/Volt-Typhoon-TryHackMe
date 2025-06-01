@@ -213,6 +213,100 @@ index=* sourcetype=powershell CommandLine="*"
 
 
 
+## Discovery
+Volt Typhoon uses enumeration techniques to gather additional information about network architecture, logging mechanisms, successful logins, and software configurations, enhancing their understanding of the target environment for strategic purposes.
+
+## Lateral Movement
+The APT has been observed moving previously created web shells to different servers as part of their lateral movement strategy. This technique facilitates their ability to traverse through networks and maintain access across multiple systems.
+
+
+The attacker uses wevtutil, a log retrieval tool, to enumerate Windows logs. What event IDs does the attacker search for?
+Answer Format: Increasing order separated by a space.
+
+
+The attacker uses `wevtutil`, a Windows event log retrieval tool, to enumerate specific event IDs from the logs.
+
+## Splunk Query Used
+
+```splunk
+index=* sourcetype=powershell CommandLine=wevtutil
+| rex field=_raw "CommandLine=(?<FullCommandLine>[^\n]+)"
+| table FullCommandLine
+```
+
+![image](https://github.com/user-attachments/assets/ca2b2cab-2a88-439e-ac97-206964ac2aa5)
+
+
+
+Moving laterally to server-02, the attacker copies over the original web shell. What is the name of the new web shell that was created?
+
+![image](https://github.com/user-attachments/assets/8a27b172-3dec-4b39-8a86-3569e4309cba)
+
+
+The attacker moves laterally to `server-02` by copying the original web shell to a new location.
+
+## Splunk Query Used
+
+```splunk
+index=* sourcetype=powershell 
+| rex field=_raw "CommandLine=(?<FullCommandLine>[^\n]+)"
+| table _time, FullCommandLine
+```
+the answer is AuditReport.jspx
+
+
+## Collection
+During the collection phase, Volt Typhoon extracts various types of data, such as local web browser information and valuable assets discovered within the target environment.
+
+The attacker is able to locate some valuable financial information during the collection phase. What three files does Volt Typhoon make copies of using PowerShell?
+Answer Format: Increasing order separated by a space.
+
+![image](https://github.com/user-attachments/assets/48127961-bd30-4314-abe2-3131c5c4c47a)
+![image](https://github.com/user-attachments/assets/d6f31fc2-2c62-4f7b-af76-9a6b3dcf6768)
+
+the answer is 2022.csv 2023.csv 2024.csv
+
+## C2
+Volt Typhoon utilizes publicly available tools as well as compromised devices to establish discreet command and control (C2) channels.
+
+## Cleanup
+To cover their tracks, the APT has been observed deleting event logs and selectively removing other traces and artifacts of their malicious activities.
+
+The attacker uses netsh to create a proxy for C2 communications. What connect address and port does the attacker use when setting up the proxy?
+Answer Format: IP Port
+
+
+![image](https://github.com/user-attachments/assets/6544c306-dcee-445c-b3ca-4a38fecbfc6b)
+
+## Splunk Query Used
+
+```splunk
+index=* sourcetype=wmic *netsh*
+```
+The attacker used wmic instead of PowerShell to run netsh because WMIC is less monitored and can help evade detection. It's a stealthier way to execute system commands without triggering PowerShell-specific alerts.
+
+
+
+To conceal their activities, what are the four types of event logs the attacker clears on the compromised system?
+
+![image](https://github.com/user-attachments/assets/411ad3d5-a5db-4a3e-85c4-8e0e592c8350
+
+Note
+If we go back to the previous questions, we can see the attacker uses the wevtutil command to enumerate and interact with event logs. In this case, they used:
+
+```
+wevtutil cl Application Security Setup System
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
