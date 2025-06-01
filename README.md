@@ -150,6 +150,73 @@ index=* sourcetype="powershell" *remove*
 | table _time, CommandLine
 | sort -_time
 ```
+This query looks for any PowerShell command that includes the word “remove,” which is commonly used in commands that delete files, registry keys, or values.
+
+
+
+### The APT continues to cover their tracks by renaming and changing the extension of the previously created archive. What is the file name (with extension) created by the attackers?
+
+![image](https://github.com/user-attachments/assets/9043092c-9ef0-4b5c-a532-76f9212db2f0)
+Changing the file extension from `.7z` (a compressed archive) to `.gif` (an image file) is a common defense evasion tactic. This makes the malicious file less likely to be noticed or flagged by security tools and system administrators.
+
+The answer is cl64.gif
+
+
+### Under what regedit path does the attacker check for evidence of a virtualized environment?
+
+![image](https://github.com/user-attachments/assets/3f47a7a0-1439-4767-8cca-0bf1032259d0)
+ ### Virtualization Check via Registry
+
+To detect whether the system is running in a virtualized environment, the attacker used the following PowerShell command:
+
+```powershell
+Get-ItemProperty -Path "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control"
+```
+
+
+# Credential Access
+
+Volt Typhoon often combs through target networks to uncover and extract credentials from a range of programs. Additionally, they are known to access hashed credentials directly from system memory.
+
+### Using reg query, Volt Typhoon hunts for opportunities to find useful credentials. What three pieces of software do they investigate?
+Answer Format: Alphabetical order separated by a comma and space.
+
+![image](https://github.com/user-attachments/assets/7c980472-0d81-4eaf-a206-a47d6859d3d1)
+
+To view full PowerShell registry queries, I used the following Splunk query:
+
+```spl
+index=* sourcetype=powershell "reg query" 
+| rex field=_raw "CommandLine=(?<FullCommandLine>[^\n]+)"
+| table _time, FullCommandLine
+| sort -_time
+```
+
+This query searches for PowerShell events containing "reg query". I used the rex command with the field=_raw option to extract the full command line from the raw event data into a new field called FullCommandLine. This helps bypass cases where the standard CommandLine field is truncated or missing.
+
+the answer is OpenSSH PuTTY RealVNC
+
+### What is the full decoded command the attacker uses to download and run mimikatz?
+
+![image](https://github.com/user-attachments/assets/3c8d1e66-d8d2-46f4-8356-72f3dd5bce87)
+
+To identify the full PowerShell command used by the attacker (including potentially obfuscated activity like downloading and executing Mimikatz), I used the following Splunk query:
+
+```spl
+index=* sourcetype=powershell CommandLine="*" 
+| rex field=_raw "CommandLine=(?<FullCommandLine>[^\n]+)" 
+| table FullCommandLine
+```
+
+![image](https://github.com/user-attachments/assets/40871a63-61e2-4796-b129-cf4523ee74c2)
+
+
+
+
+
+
+
+
 
 
 
